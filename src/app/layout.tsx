@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import GlobalNav from "@/components/GlobalNav";
 
-const geist = Geist({
-  variable: "--font-geist-sans",
+const dmSans = DM_Sans({
+  variable: "--font-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -19,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`${geist.variable} h-full antialiased`}>
-      <body className="min-h-full bg-slate-50 text-slate-900">
+    <html lang="fr" className={`${dmSans.variable} h-full antialiased`}>
+      <body className="min-h-full bg-[#F7F7F7] text-[#171717]">
         <GlobalNav />
         <div className="pt-10">{children}</div>
       </body>

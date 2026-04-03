@@ -6,19 +6,19 @@ import CalendarGrid from "@/components/CalendarGrid";
 import StatusBadge from "@/components/StatusBadge";
 import { freelanceData, crasFreelance, facturesFreelance } from "@/lib/mockData";
 import {
-  Home,
   Calendar,
   FileText,
   Receipt,
   ChevronDown,
+  Upload,
 } from "lucide-react";
 
 type Section = "jours" | "cra" | "factures";
 
 const navItems: { id: Section; label: string; icon: React.ReactNode }[] = [
-  { id: "jours", label: "Mes jours", icon: <Calendar size={18} /> },
-  { id: "cra", label: "Mes CRA", icon: <FileText size={18} /> },
-  { id: "factures", label: "Mes factures", icon: <Receipt size={18} /> },
+  { id: "jours",    label: "Mes jours",    icon: <Calendar size={16} /> },
+  { id: "cra",      label: "Mes CRA",      icon: <FileText size={16} /> },
+  { id: "factures", label: "Mes factures", icon: <Receipt size={16} /> },
 ];
 
 export default function FreelanceDashboard() {
@@ -27,32 +27,30 @@ export default function FreelanceDashboard() {
   return (
     <div className="flex h-[calc(100vh-40px)]">
       {/* Sidebar */}
-      <aside className="w-60 bg-white border-r border-slate-200 flex flex-col shrink-0">
-        <div className="px-5 py-5 border-b border-slate-100">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-teal-600 flex items-center justify-center">
-              <span className="text-white text-xs font-bold">A</span>
+      <aside className="w-56 bg-white border-r border-slate-100 flex flex-col shrink-0">
+        {/* User header */}
+        <div className="px-4 py-5 border-b border-slate-100">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-full bg-teal-600 flex items-center justify-center shrink-0">
+              <span className="text-white text-xs font-bold">SM</span>
             </div>
-            <span className="font-semibold text-slate-800 text-sm">Arboriia</span>
+            <div className="min-w-0">
+              <p className="text-[13px] font-semibold text-slate-800 leading-tight truncate">{freelanceData.name}</p>
+              <p className="text-[11px] text-slate-400 font-medium">Freelance RH</p>
+            </div>
           </div>
-          <p className="text-xs text-slate-500 mt-1 ml-9">{freelanceData.name}</p>
         </div>
-        <nav className="flex-1 py-4 px-3">
-          <button
-            onClick={() => setSection("jours")}
-            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium mb-0.5 transition-colors text-left text-slate-600 hover:bg-slate-50 hover:text-slate-900`}
-          >
-            <Home size={18} />
-            Accueil
-          </button>
+
+        {/* Nav */}
+        <nav className="flex-1 py-3 px-2 space-y-0.5">
           {navItems.map((item) => (
             <button
               key={item.id}
               onClick={() => setSection(item.id)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium mb-0.5 transition-colors text-left ${
+              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all duration-100 text-left ${
                 section === item.id
-                  ? "bg-teal-50 text-teal-700"
-                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                  ? "bg-teal-600 text-white shadow-sm"
+                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
               }`}
             >
               {item.icon}
@@ -60,12 +58,23 @@ export default function FreelanceDashboard() {
             </button>
           ))}
         </nav>
+
+        {/* Missions indicator */}
+        <div className="px-4 py-4 border-t border-slate-100">
+          <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-2">Missions actives</p>
+          {freelanceData.missions.map((m) => (
+            <div key={m.id} className="flex items-center gap-2 mb-1.5">
+              <div className="w-1.5 h-1.5 rounded-full bg-teal-500 shrink-0" />
+              <p className="text-[11px] font-medium text-slate-600 truncate">{m.client}</p>
+            </div>
+          ))}
+        </div>
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-auto bg-slate-50">
-        {section === "jours" && <JoursSection />}
-        {section === "cra" && <CRASection />}
+      <main className="flex-1 overflow-auto bg-[#F7F7F7]">
+        {section === "jours"    && <JoursSection />}
+        {section === "cra"      && <CRASection />}
         {section === "factures" && <FacturesSection />}
       </main>
     </div>
@@ -87,21 +96,21 @@ function JoursSection() {
 
   return (
     <div className="p-8">
-      <div className="mb-6">
-        <h1 className="text-xl font-bold text-slate-900">Mes jours — Avril 2026</h1>
-        <p className="text-sm text-slate-500 mt-0.5">Cliquez sur un jour pour le marquer comme travaillé</p>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Mes jours — Avril 2026</h1>
+        <p className="text-sm text-slate-400 mt-1 font-medium">Cliquez sur un jour pour le marquer comme travaillé</p>
       </div>
 
       {/* Mission selector */}
       <div className="mb-6">
-        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1.5">
-          Mission
+        <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest block mb-2">
+          Mission sélectionnée
         </label>
         <div className="relative inline-block">
           <select
             value={selectedMission}
             onChange={(e) => setSelectedMission(Number(e.target.value))}
-            className="appearance-none bg-white border border-slate-200 rounded-lg px-4 py-2.5 pr-10 text-sm font-medium text-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 cursor-pointer"
+            className="appearance-none bg-white border border-slate-200 rounded-xl px-4 py-2.5 pr-10 text-[13px] font-semibold text-slate-800 shadow-[0_1px_3px_rgba(0,0,0,0.04)] focus:outline-none focus:ring-2 focus:ring-teal-500 cursor-pointer"
           >
             {freelanceData.missions.map((m) => (
               <option key={m.id} value={m.id}>
@@ -113,31 +122,34 @@ function JoursSection() {
         </div>
       </div>
 
-      {/* Calendar */}
-      <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-6 max-w-md">
-        <CalendarGrid
-          year={2026}
-          month={3} // April = 3 (0-based)
-          workedDays={workedDays}
-          onDayClick={toggleDay}
-        />
-      </div>
+      <div className="flex gap-6 items-start">
+        {/* Calendar */}
+        <div className="bg-white rounded-xl border border-slate-100 shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-6 w-80 shrink-0">
+          <CalendarGrid
+            year={2026}
+            month={3}
+            workedDays={workedDays}
+            onDayClick={toggleDay}
+          />
+        </div>
 
-      {/* Summary */}
-      <div className="mt-4 flex items-center gap-6 bg-white rounded-lg border border-slate-200 shadow-sm px-6 py-4 max-w-md">
-        <div>
-          <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">Jours travaillés</p>
-          <p className="text-2xl font-bold text-teal-700 mt-0.5">{workedDays.length} j</p>
-        </div>
-        <div className="w-px h-10 bg-slate-200" />
-        <div>
-          <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">Montant estimé</p>
-          <p className="text-2xl font-bold text-slate-900 mt-0.5">{montant.toLocaleString("fr-FR")} €</p>
-        </div>
-        <div className="w-px h-10 bg-slate-200" />
-        <div>
-          <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">TJM</p>
-          <p className="text-2xl font-bold text-slate-700 mt-0.5">{mission.tjm_freelance} €</p>
+        {/* Summary */}
+        <div className="flex flex-col gap-3">
+          <div className="bg-white rounded-xl border border-slate-100 shadow-[0_1px_4px_rgba(0,0,0,0.04)] px-6 py-5">
+            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-1.5">Jours travaillés</p>
+            <p className="text-4xl font-bold text-teal-700 tracking-tight">{workedDays.length}</p>
+            <p className="text-[12px] text-slate-400 mt-1 font-medium">jours ce mois</p>
+          </div>
+          <div className="bg-white rounded-xl border border-slate-100 shadow-[0_1px_4px_rgba(0,0,0,0.04)] px-6 py-5">
+            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-1.5">Montant estimé</p>
+            <p className="text-4xl font-bold text-slate-900 tracking-tight">{montant.toLocaleString("fr-FR")}</p>
+            <p className="text-[12px] text-slate-400 mt-1 font-medium">€ HT — {mission.tjm_freelance} €/j</p>
+          </div>
+          <div className="bg-teal-600 rounded-xl px-6 py-4">
+            <p className="text-[10px] font-semibold text-teal-200 uppercase tracking-widest mb-1">Mission active</p>
+            <p className="text-[13px] font-bold text-white">{mission.client}</p>
+            <p className="text-[12px] text-teal-200 font-medium">{mission.role}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -147,35 +159,35 @@ function JoursSection() {
 function CRASection() {
   return (
     <div className="p-8">
-      <div className="mb-6">
-        <h1 className="text-xl font-bold text-slate-900">Mes CRA</h1>
-        <p className="text-sm text-slate-500 mt-0.5">Historique de vos comptes rendus d'activité</p>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Mes CRA</h1>
+        <p className="text-sm text-slate-400 mt-1 font-medium">Historique de vos comptes rendus d'activité</p>
       </div>
-      <div className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-50">
-            <tr>
-              {["Mois", "Client", "Jours", "Montant", "Statut", "Action"].map((h) => (
-                <th key={h} className="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+      <div className="bg-white rounded-xl border border-slate-100 shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-slate-100">
+              {["Mois", "Client", "Jours", "Montant", "Statut", ""].map((h) => (
+                <th key={h} className="px-6 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
                   {h}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody>
-            {crasFreelance.map((row, i) => (
-              <tr key={row.id} className={i % 2 === 0 ? "bg-white" : "bg-slate-50/50"}>
-                <td className="px-5 py-3.5 font-medium text-slate-900">{row.mois}</td>
-                <td className="px-5 py-3.5 text-slate-600">{row.client}</td>
-                <td className="px-5 py-3.5 text-slate-600">{row.jours} j</td>
-                <td className="px-5 py-3.5 font-medium text-slate-900">{row.montant.toLocaleString("fr-FR")} €</td>
-                <td className="px-5 py-3.5">
+          <tbody className="divide-y divide-slate-50">
+            {crasFreelance.map((row) => (
+              <tr key={row.id} className="hover:bg-slate-50/60 transition-colors group">
+                <td className="px-6 py-4 text-[13px] font-semibold text-slate-900">{row.mois}</td>
+                <td className="px-6 py-4 text-[13px] text-slate-500 font-medium">{row.client}</td>
+                <td className="px-6 py-4 text-[13px] text-slate-500 font-medium">{row.jours} j</td>
+                <td className="px-6 py-4 text-[13px] font-semibold text-slate-900">{row.montant.toLocaleString("fr-FR")} €</td>
+                <td className="px-6 py-4">
                   <StatusBadge status={row.statut} />
                 </td>
-                <td className="px-5 py-3.5">
+                <td className="px-6 py-4">
                   <Link
                     href={`/cra/${row.id}`}
-                    className="text-xs text-teal-600 font-medium hover:text-teal-700 underline underline-offset-2"
+                    className="text-[12px] font-semibold text-teal-600 hover:text-teal-700 opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     Voir le CRA →
                   </Link>
@@ -192,34 +204,37 @@ function CRASection() {
 function FacturesSection() {
   return (
     <div className="p-8">
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Mes factures</h1>
-          <p className="text-sm text-slate-500 mt-0.5">Suivi de vos factures Arboriia</p>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Mes factures</h1>
+          <p className="text-sm text-slate-400 mt-1 font-medium">Suivi de vos factures Arboriia</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white text-sm font-medium rounded-lg hover:bg-teal-700 transition-colors shadow-sm">
-          + Déposer une facture
+        <button className="flex items-center gap-2 px-4 py-2.5 bg-teal-600 text-white text-[13px] font-semibold rounded-xl hover:bg-teal-700 transition-colors shadow-sm">
+          <Upload size={14} />
+          Déposer une facture
         </button>
       </div>
-      <div className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-50">
-            <tr>
+      <div className="bg-white rounded-xl border border-slate-100 shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-slate-100">
               {["Référence", "Client", "Montant HT", "Date", "Statut"].map((h) => (
-                <th key={h} className="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <th key={h} className="px-6 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
                   {h}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody>
-            {facturesFreelance.map((row, i) => (
-              <tr key={row.ref} className={i % 2 === 0 ? "bg-white" : "bg-slate-50/50"}>
-                <td className="px-5 py-3.5 font-mono text-xs text-slate-600">{row.ref}</td>
-                <td className="px-5 py-3.5 text-slate-700">{row.client}</td>
-                <td className="px-5 py-3.5 font-medium text-slate-900">{row.montant.toLocaleString("fr-FR")} €</td>
-                <td className="px-5 py-3.5 text-slate-600">{row.date}</td>
-                <td className="px-5 py-3.5">
+          <tbody className="divide-y divide-slate-50">
+            {facturesFreelance.map((row) => (
+              <tr key={row.ref} className="hover:bg-slate-50/60 transition-colors">
+                <td className="px-6 py-4">
+                  <span className="text-[11px] font-mono font-semibold text-slate-400 bg-slate-50 px-2 py-1 rounded">{row.ref}</span>
+                </td>
+                <td className="px-6 py-4 text-[13px] text-slate-500 font-medium">{row.client}</td>
+                <td className="px-6 py-4 text-[13px] font-semibold text-slate-900">{row.montant.toLocaleString("fr-FR")} €</td>
+                <td className="px-6 py-4 text-[13px] text-slate-400 font-medium">{row.date}</td>
+                <td className="px-6 py-4">
                   <StatusBadge status={row.statut} />
                 </td>
               </tr>
